@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Actions\Fortify\CreateNewUser;
+
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
@@ -18,6 +18,8 @@ use App\Http\Requests\LoginRequest;
 use Laravel\Fortify\Contracts\LoginResponse;
 use Laravel\Fortify\Contracts\RegisterResponse;
 use App\Actions\Fortify\CustomRegisterResponse;
+use Laravel\Fortify\Contracts\VerifyEmailResponse;
+use App\Http\Responses\CustomVerifyEmailResponse;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -32,11 +34,12 @@ class FortifyServiceProvider extends ServiceProvider
                 public function toResponse($request)
                 {
                     return redirect()->intended(
-                        $request->user()->hasVerifiedEmail() ? '/admin' : '/email/verify'
+                        $request->user()->hasVerifiedEmail() ? '/' : '/email/verify'
                     )->with('message', 'ログインしました');
                 }
             };
         });
+        $this->app->singleton(VerifyEmailResponse::class, CustomVerifyEmailResponse::class);
     }
 
     /**
@@ -44,7 +47,6 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Fortify::createUsersUsing(CreateNewUser::class);
 
         Fortify::registerView(function () {
             return view('auth.register');

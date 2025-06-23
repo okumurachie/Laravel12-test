@@ -11,20 +11,38 @@
     @livewireStyles
 </head>
 <body>
-    @if (session('message'))
-    <div class="alert alert-success">
-        {{ session('message') }}
-    </div>
-    @endif
     <div class="app">
         <header class="header">
             <h1 class="header__heading">Laravel12-test</h1>
+            <ul class="header-nav">
+                @if (Auth::check())
+                <li class="header-nav__item">
+                    <form class="form" action="/logout" method="post">
+                        @csrf
+                        <button class="header-nav__button">logout</button>
+                    </form>
+                </li>
+                @else
+                <li class="header-nav__item">
+                    <a class="header-nav__link" href="/login">login</a>
+                </li>
+                <li class="header-nav__item">
+                    <a class="header-nav__link" href="/register">register</a>
+                </li>
+                @endif
+            </ul>
+        </nav>
         </header>
-    <main>
-    <div class="content">
-        @yield('content')
-    </div>
-    </main>
+        <main>
+        @if (session('message'))
+        <div class="alert alert-success">
+            {{ session('message') }}
+        </div>
+        @endif
+        <div class="content">
+            @yield('content')
+        </div>
+        </main>
     </div>
     @livewireScripts
 </body>
